@@ -5957,6 +5957,21 @@ static bool BotFillCmd( gentity_t *ent, const Cmd::Args& args )
 		level.team[team].botFillSkillLevel = skill;
 	}
 
+	char team_str[16] = "nothing";
+	if ( teams.size() >= NUM_TEAMS - 1 )
+	{
+		strcpy( team_str, "teams" );
+	}
+	else if ( teams.at(0) == team_t::TEAM_ALIENS )
+	{
+		strcpy( team_str, "aliens" );
+	}
+	else if ( teams.at(0) == team_t::TEAM_HUMANS )
+	{
+		strcpy( team_str, "humans" );
+	}
+	AP( va( "print_tr %s %s %d %s", QQ( N_("^3bot:^* $1$^* decided to fill $3$ with bots to $2$") ), G_quoted_admin_name( ent ), count, team_str ) );
+
 	G_BotFill(true);
 	return true;
 }
