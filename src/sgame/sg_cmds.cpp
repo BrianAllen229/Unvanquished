@@ -1943,8 +1943,17 @@ static void Cmd_CallVote_f( gentity_t *ent )
 				return;
 			}
 
+			char maxMinersStr[12] = ""; // 11 is max strlen() for 32-bit (signed) int
+			if ( num < 0 )
+			{
+				strcpy( maxMinersStr, "∞" );
+			}
+			else
+			{
+				sprintf( maxMinersStr, "%d", num );
+			}
 			Com_sprintf( level.team[ team ].voteString, sizeof( level.team[ team ].voteString ), "g_maxMiners %d", num );
-			Com_sprintf( level.team[ team ].voteDisplayString, sizeof( level.team[ team ].voteDisplayString ), N_("Set maximum number of drills/leeches to %d"), num );
+			Com_sprintf( level.team[ team ].voteDisplayString, sizeof( level.team[ team ].voteDisplayString ), N_("Set maximum number of drills/leeches to %s"), maxMinersStr );
 
 			break;
 		}
@@ -3884,24 +3893,35 @@ void Cmd_TeamStatus_f( gentity_t * ent )
 			}
 		}
 	}
-	
+
+	char maxMinersStr[12] = ""; // 11 is max strlen() for 32-bit (signed) int
+	int maxMiners = g_maxMiners.Get();
+	if ( maxMiners < 0 )
+	{
+		strcpy( maxMinersStr, "∞" );
+	}
+	else
+	{
+		sprintf( maxMinersStr, "%d", maxMiners );
+	}
+
 	if ( G_Team( ent ) == TEAM_ALIENS ) 
 	{
 		G_Say( ent, SAY_TEAM,
-		      va( "^3[overmind]: %s(%d) ^3Spawns: ^5%d ^3Builders: ^5%d ^3Boosters: ^5%d ^3Leeches: ^5%d",
+		      va( "^3[overmind]: %s(%d) ^3Spawns: ^5%d ^3Builders: ^5%d ^3Boosters: ^5%d ^3Leeches: ^5%d/%s",
 		    	(! structures[ BA_A_OVERMIND ].count ) ? "^1Down" : ( structures[ BA_A_OVERMIND ].spawned ) ? "^2Up" : // OM health logic
 		    	"^5Building", structures[ BA_A_OVERMIND ].health * 100 / BG_Buildable( BA_A_OVERMIND )->health, // OM health logic part 2
 				level.team[ TEAM_ALIENS ].numSpawns, builders, // spawns, builders
-				structures[ BA_A_BOOSTER ].count, structures[ BA_A_LEECH ].count ) ); // booster, leech
+				  structures[ BA_A_BOOSTER ].count, structures[ BA_A_LEECH ].count, maxMinersStr ) ); // booster, leech
 	} 
 	else 
 	{
 		G_Say( ent, SAY_TEAM,
-		      va( "^3[reactor]: %s(%d) ^3Spawns: ^5%d ^3Builders: ^5%d ^3Armouries: ^5%d ^3Medistations: ^5%d ^3Drills: ^5%d",
+		      va( "^3[reactor]: %s(%d) ^3Spawns: ^5%d ^3Builders: ^5%d ^3Armouries: ^5%d ^3Medistations: ^5%d ^3Drills: ^5%d/%s",
 		    	(! structures[ BA_H_REACTOR ].count ) ? "^1Down" : ( structures[ BA_H_REACTOR ].spawned ) ? "^2Up" : // RC health logic
 		    	"^5Building", structures[ BA_H_REACTOR ].health * 100 / BG_Buildable( BA_H_REACTOR )->health, // RC health logic part 2
 				level.team[ TEAM_HUMANS ].numSpawns, builders, // spawns, builders
-				structures[ BA_H_ARMOURY ].count, structures[ BA_H_MEDISTAT ].count, structures[ BA_H_DRILL ].count ) ); // arm, medi, drill
+				  structures[ BA_H_ARMOURY ].count, structures[ BA_H_MEDISTAT ].count, structures[ BA_H_DRILL ].count, maxMinersStr ) ); // arm, medi, drill
 	}
 }
 
