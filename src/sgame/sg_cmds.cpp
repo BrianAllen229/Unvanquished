@@ -1618,6 +1618,7 @@ static const struct {
 	{ "fillbots",        true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_fillBotsVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ "fillbots_humans", true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_fillBotsTeamVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ "fillbots_aliens", true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_fillBotsTeamVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
+	{ "maxminers"      , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_maxMinersVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ }
 	// note: map votes use the reason, if given, as the layout name
 };
@@ -1932,6 +1933,21 @@ static void Cmd_CallVote_f( gentity_t *ent )
 		             sizeof( level.team[ team ].voteDisplayString ),
 		             N_("Move player '%s' to spectators"), name );
 		break;
+
+	case VOTE_MAX_MINERS:
+		{
+			int num = 0;
+			if ( !Str::ParseInt( num, arg ) || num < -1 || num > 128 )
+			{
+				trap_SendServerCommand( ent - g_entities, va( "print_tr %s %s", QQ( N_("$1$: invalid number") ), cmd  ) );
+				return;
+			}
+
+			Com_sprintf( level.team[ team ].voteString, sizeof( level.team[ team ].voteString ), "g_maxMiners %d", num );
+			Com_sprintf( level.team[ team ].voteDisplayString, sizeof( level.team[ team ].voteDisplayString ), N_("Set maximum number of drills/leeches to %d"), num );
+
+			break;
+		}
 
 	case VOTE_BOT_KICK:
 		{
