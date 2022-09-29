@@ -1618,6 +1618,7 @@ static const struct {
 	{ "fillbots",        true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_fillBotsVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ "fillbots_humans", true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_fillBotsTeamVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ "fillbots_aliens", true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_fillBotsTeamVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
+	{ "botskill",        true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_fillBotsVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ "maxminers"      , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_maxMinersVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ }
 	// note: map votes use the reason, if given, as the layout name
@@ -1954,6 +1955,21 @@ static void Cmd_CallVote_f( gentity_t *ent )
 			}
 			Com_sprintf( level.team[ team ].voteString, sizeof( level.team[ team ].voteString ), "g_maxMiners %d", num );
 			Com_sprintf( level.team[ team ].voteDisplayString, sizeof( level.team[ team ].voteDisplayString ), N_("Set maximum number of drills/leeches to %s"), maxMinersStr );
+
+			break;
+		}
+
+	case VOTE_BOT_SKILL:
+		{
+			int num = 0;
+			if ( !Str::ParseInt( num, arg ) || num < 1 || num > 9 )
+			{
+				trap_SendServerCommand( ent - g_entities, va( "print_tr %s %s", QQ( N_("$1$: invalid bot skill level") ), cmd  ) );
+				return;
+			}
+
+			Com_sprintf( level.team[ team ].voteString, sizeof( level.team[ team ].voteString ), "bot skill %d", num );
+			Com_sprintf( level.team[ team ].voteDisplayString, sizeof( level.team[ team ].voteDisplayString ), N_("Set bot skill level to %d"), num );
 
 			break;
 		}

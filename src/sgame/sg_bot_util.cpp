@@ -34,7 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-static Cvar::Range<Cvar::Cvar<int>> g_bot_defaultSkill( "g_bot_defaultSkill", "Default skill value bots will have when added", Cvar::NONE, 5, 1, 9 );
+Cvar::Range<Cvar::Cvar<int>> g_bot_defaultSkill( "g_bot_defaultSkill", "Default skill value bots will have when added", Cvar::NONE, 5, 1, 9 );
 
 static void ListTeamEquipment( gentity_t *self, unsigned int (&numUpgrades)[UP_NUM_UPGRADES], unsigned int (&numWeapons)[WP_NUM_WEAPONS] );
 static const int MIN_SKILL = 1;

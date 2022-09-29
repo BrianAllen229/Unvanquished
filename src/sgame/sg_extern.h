@@ -171,6 +171,8 @@ extern  Cvar::Cvar<float> g_evolveAroundHumans;
 extern  Cvar::Cvar<float> g_devolveMaxBaseDistance;
 
 extern Cvar::Cvar<int> g_maxMiners;
+extern Cvar::Range<Cvar::Cvar<int>> g_bot_defaultSkill;
+
 
 // bots: buying weapons cvars
 extern Cvar::Cvar<bool> g_bot_buy;
