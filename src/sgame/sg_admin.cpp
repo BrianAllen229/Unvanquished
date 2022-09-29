@@ -6187,6 +6187,22 @@ bool G_admin_bot( gentity_t *ent )
 			const std::string& teamStr = args.Argv( 3 );
 			team = BG_PlayableTeamFromString( teamStr.c_str() );
 		}
+		switch (team)
+		{
+		case TEAM_NONE:
+			AP( va( "print_tr %s %s %d", QQ( N_("^3bot:^* $1$^* decided to set the bot skill level to $2$") ), G_quoted_admin_name( ent ), skill ) );
+			g_bot_defaultSkill.Set(skill);
+			break;
+		case TEAM_ALIENS:
+			AP( va( "print_tr %s %s %d", QQ( N_("^3bot:^* $1$^* decided to set the ^2alien^* bot skill level to $2$") ), G_quoted_admin_name( ent ), skill ) );
+			break;
+		case TEAM_HUMANS:
+			AP( va( "print_tr %s %s %d", QQ( N_("^3bot:^* $1$^* decided to set the ^2human^* bot skill level to $2$") ), G_quoted_admin_name( ent ), skill ) );
+			break;
+		default:
+			break;
+		}
+
 		for ( int i = 0; i < MAX_CLIENTS; ++i )
 		{
 			if ( team != TEAM_NONE && G_Team( &g_entities[ i ] ) != team )
