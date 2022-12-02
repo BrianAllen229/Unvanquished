@@ -1621,6 +1621,8 @@ static const struct {
 	{ "botskill",        true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_fillBotsVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ "maxminers"      , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_maxMinersVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ "minerbp"        , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_mapVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
+	{ "enableff"       , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_mapVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
+	{ "disableff"      , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_mapVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ }
 	// note: map votes use the reason, if given, as the layout name
 };
@@ -1935,6 +1937,22 @@ static void Cmd_CallVote_f( gentity_t *ent )
 		             sizeof( level.team[ team ].voteDisplayString ),
 		             N_("Move player '%s' to spectators"), name );
 		break;
+
+	case VOTE_ENABLE_FF:
+		{
+			Com_sprintf( level.team[ team ].voteString, sizeof( level.team[ team ].voteString ), "exec enableff.cfg" );
+			Com_sprintf( level.team[ team ].voteDisplayString, sizeof( level.team[ team ].voteDisplayString ), N_("Enable friendly fire") );
+
+			break;
+		}
+
+	case VOTE_DISABLE_FF:
+		{
+			Com_sprintf( level.team[ team ].voteString, sizeof( level.team[ team ].voteString ), "exec disableff.cfg" );
+			Com_sprintf( level.team[ team ].voteDisplayString, sizeof( level.team[ team ].voteDisplayString ), N_("Disable friendly fire") );
+
+			break;
+		}
 
 	case VOTE_MAX_MINERS:
 		{
