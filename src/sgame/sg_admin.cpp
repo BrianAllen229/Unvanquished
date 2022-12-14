@@ -233,6 +233,12 @@ static const g_admin_cmd_t     g_admin_cmds[] =
 	},
 
 	{
+		"doomsday",     G_admin_doomsday,    false, "doomsday",
+		N_("entity doomsday clock"),
+		""
+	},
+
+	{
 		"flag",          G_admin_flag,       false, "flag",
 		N_("add an admin flag to a player, prefix flag with '-' to disallow the flag. "
 		   "console can use this command on admin levels by prefacing a '*' to the admin level value."),
@@ -2414,6 +2420,18 @@ bool G_admin_setlevel( gentity_t *ent )
 		G_admin_cmdlist( vic );
 	}
 
+	return true;
+}
+
+bool G_admin_doomsday( gentity_t *ent )
+{
+	int count = 0;
+	for ( int i = 0; i < MAX_GENTITIES; i++ )
+	{
+		count += g_entities[ i ].inuse ? 1 : 0;
+	}
+	ADMP( va( "%s %d", QQ( N_("^3doomsday:^* $1$ free entities left") ),
+			  MAX_GENTITIES - count ) );
 	return true;
 }
 
