@@ -1469,7 +1469,11 @@ glm::vec3 BotGetIdealAimLocation( gentity_t *self, const botTarget_t &target )
 
 static int BotGetAimPredictionTime( gentity_t *self )
 {
-	auto time = ( 10 - self->botMind->botSkill.level ) * 100 * std::max( random(), 0.5f );
+	int time = 0;
+	if ( G_Team( self ) == TEAM_ALIENS )
+		time = ( 10 - self->botMind->botSkill.level ) * 200 * std::max( random(), 0.5f );
+	else
+		time = ( 10 - self->botMind->botSkill.level ) * 150 * std::max( random(), 0.5f );
 	return std::max( 1, int(time) );
 }
 
