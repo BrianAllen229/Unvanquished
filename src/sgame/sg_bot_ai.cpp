@@ -915,7 +915,8 @@ AINodeStatus_t BotActionFightCampy( gentity_t *self, AIGenericNode_t *node )
 
 	if ( inAttackRange && self->botMind->goal.getTargetType() == entityType_t::ET_BUILDABLE )
 	{
-		BotStandStill( self );
+		//BotStandStill( self );
+		BotStrafeDodge( self );
 	}
 
 	BotSprint( self, true );
@@ -1052,7 +1053,8 @@ AINodeStatus_t BotActionFight( gentity_t *self, AIGenericNode_t *node )
 
 	if ( inAttackRange && self->botMind->goal.getTargetType() == entityType_t::ET_BUILDABLE )
 	{
-		BotStandStill( self );
+		//BotStandStill( self );
+		BotStrafeDodge( self );
 	}
 
 	BotSprint( self, true );
