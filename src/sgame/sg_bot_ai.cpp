@@ -782,6 +782,142 @@ AINodeStatus_t BotActionSay( gentity_t *self, AIGenericNode_t *node )
 	return STATUS_SUCCESS;
 }
 
+AINodeStatus_t BotActionFightCampy( gentity_t *self, AIGenericNode_t *node )
+{
+	team_t myTeam = ( team_t ) self->client->pers.team;
+	botMemory_t const* mind = self->botMind;
+
+	if ( self->botMind->currentNode != node )
+	{
+		if ( !BotEntityIsValidEnemyTarget( self, self->botMind->bestEnemy.ent ) || !BotChangeGoalEntity( self, self->botMind->bestEnemy.ent ) )
+		{
+			return STATUS_FAILURE;
+		}
+
+		self->botMind->currentNode = node;
+		self->botMind->enemyLastSeen = level.time;
+		return STATUS_RUNNING;
+	}
+
+	// we killed it, yay!
+	if ( !mind->goal.targetsValidEntity()
+		|| !BotEntityIsValidEnemyTarget( self, mind->goal.getTargetedEntity() ) )
+	{
+		return STATUS_SUCCESS;
+	}
+
+	if ( !mind->nav().havePath )
+	{
+		return STATUS_FAILURE;
+	}
+
+	if ( WeaponIsEmpty( BG_GetPlayerWeapon( &self->client->ps ), &self->client->ps ) && myTeam == TEAM_HUMANS )
+	{
+		G_ForceWeaponChange( self, WP_BLASTER );
+	}
+
+	if ( BG_GetPlayerWeapon( &self->client->ps ) == WP_HBUILD )
+	{
+		G_ForceWeaponChange( self, WP_BLASTER );
+	}
+
+	//aliens have radar so they will always 'see' the enemy if they are in radar range
+	if ( myTeam == TEAM_ALIENS && DistanceToGoalSquared( self ) <= Square( g_bot_alienSenseRangeCampy.Get() ) )
+	{
+		self->botMind->enemyLastSeen = level.time;
+	}
+
+	if ( !BotTargetIsVisible( self, self->botMind->goal, MASK_OPAQUE ) )
+	{
+		botTarget_t proposedTarget;
+		proposedTarget = self->botMind->bestEnemy.ent;
+
+		//we can see another enemy (not our target) so switch to it
+		if ( self->botMind->bestEnemy.ent
+		  && ( self->botMind->goal.getTargetedEntity()
+		    != self->botMind->bestEnemy.ent )
+		  && BotPathIsWalkable( self, proposedTarget ) )
+		{
+			// force the BT to evaluate again and this action to
+			// retarget
+			return STATUS_SUCCESS;
+		}
+		else if ( level.time - self->botMind->enemyLastSeen >= g_bot_chasetimeCampy.Get() )
+		{
+			return STATUS_SUCCESS;
+		}
+		else
+		{
+			BotMoveToGoal( self );
+			return STATUS_RUNNING;
+		}
+	}
+
+	// We have a valid visible target
+
+	bool inAttackRange = BotTargetInAttackRange( self, self->botMind->goal );
+	self->botMind->enemyLastSeen = level.time;
+
+	if ( !( inAttackRange && myTeam == TEAM_HUMANS ) && !mind->nav().directPathToGoal )
+	{
+		BotMoveToGoal( self );
+		return STATUS_RUNNING;
+	}
+
+	// We have a visible target for which we haven't got a
+	// direct navmesh path and we are not at at weapon range (if human)
+
+	BotAimAtEnemy( self );
+	BotMoveInDir( self, MOVE_FORWARD );
+
+	if ( inAttackRange || self->client->ps.weapon == WP_PAIN_SAW )
+	{
+		BotFireWeaponAI( self );
+	}
+
+	if ( myTeam == TEAM_ALIENS )
+	{
+		BotClassMovement( self, inAttackRange );
+		return STATUS_RUNNING;
+	}
+
+	// We are human and we either are at fire range, or have
+	// a direct path to goal
+
+	if ( self->botMind->botSkill.level >= 3 && DistanceToGoalSquared( self ) < Square( MAX_HUMAN_DANCE_DIST )
+	        && ( DistanceToGoalSquared( self ) > Square( MIN_HUMAN_DANCE_DIST ) || self->botMind->botSkill.level < 5 )
+	        && self->client->ps.weapon != WP_PAIN_SAW && self->client->ps.weapon != WP_FLAMER )
+	{
+		BotMoveInDir( self, MOVE_BACKWARD );
+	}
+	else if ( DistanceToGoalSquared( self ) <= Square( MIN_HUMAN_DANCE_DIST ) ) //we wont hit this if skill < 5
+	{
+		// We will be moving toward enemy, strafing to
+		// the result: we go around the enemy
+		BotAlternateStrafe( self );
+	}
+	else if ( DistanceToGoalSquared( self ) >= Square( MAX_HUMAN_DANCE_DIST ) && self->client->ps.weapon != WP_PAIN_SAW )
+	{
+		if ( DistanceToGoalSquared( self ) - Square( MAX_HUMAN_DANCE_DIST ) < 100 )
+		{
+			BotStandStill( self );
+		}
+		else
+		{
+			BotStrafeDodge( self );
+		}
+	}
+
+	if ( inAttackRange && self->botMind->goal.getTargetType() == entityType_t::ET_BUILDABLE )
+	{
+		BotStandStill( self );
+	}
+
+	BotSprint( self, true );
+
+	return STATUS_RUNNING;
+}
+
 // TODO: Move decision making out of these actions and into the rest of the behavior tree
 AINodeStatus_t BotActionFight( gentity_t *self, AIGenericNode_t *node )
 {

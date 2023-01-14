@@ -289,6 +289,9 @@ Cvar::Cvar<int> g_bot_reactiontime("g_bot_reactiontime", "bots' reaction time to
 Cvar::Cvar<bool> g_bot_infiniteFunds("g_bot_infiniteFunds", "give bots unlimited funds", Cvar::NONE, false);
 Cvar::Cvar<bool> g_bot_infiniteMomentum("g_bot_infiniteMomentum", "allow bots to ignore momentum, but not other restrictions", Cvar::NONE, false);
 
+Cvar::Cvar<int> g_bot_chasetimeCampy("g_bot_chasetimeCampy", "bots stop chasing after x ms out of sight, when campy", Cvar::NONE, 1000);
+Cvar::Cvar<int> g_bot_alienSenseRangeCampy("g_bot_alienSenseRangeCampy", "distance of alien sensor for campy bots", Cvar::NONE, ALIENSENSE_RANGE);
+
 //</bot stuff>
 
 static Cvar::Cvar<std::string> gamename("gamename", "game/mod identifier", Cvar::SERVERINFO | Cvar::ROM, GAME_VERSION);
