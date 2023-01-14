@@ -1981,9 +1981,10 @@ static void Cmd_CallVote_f( gentity_t *ent )
 	case VOTE_MINER_BP:
 		{
 			int num = 0;
-			if ( !Str::ParseInt( num, arg ) || num < 1 || num > 127 )
+			int max = 127;
+			if ( !Str::ParseInt( num, arg ) || num < 1 || num > max )
 			{
-				trap_SendServerCommand( ent - g_entities, va( "print_tr %s %s", QQ( N_("$1$: number must be between 0 and 1001") ), cmd  ) );
+				trap_SendServerCommand( ent - g_entities, va( "print_tr %s %s %d", QQ( N_("$1$: number must be between 0 and $2$") ), cmd, max ) );
 				return;
 			}
 
