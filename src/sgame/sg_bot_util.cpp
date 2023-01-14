@@ -942,10 +942,11 @@ gentity_t* BotFindBestEnemy( gentity_t *self )
 	}
 }
 
+Cvar::Cvar<int> g_bot_xrayRadius("g_bot_xrayRadius", "radius of sphere in which BotFindClosestEnemy() cheats", Cvar::NONE, static_cast<int> ( ALIENSENSE_RANGE ) );
 gentity_t* BotFindClosestEnemy( gentity_t *self )
 {
 	gentity_t* closestEnemy = nullptr;
-	float minDistance = Square( ALIENSENSE_RANGE );
+	float minDistance = Square( static_cast<float> ( g_bot_xrayRadius.Get() ) );
 	gentity_t *target;
 
 	for ( target = g_entities; target < &g_entities[level.num_entities - 1]; target++ )
