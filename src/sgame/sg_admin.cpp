@@ -282,7 +282,7 @@ static const g_admin_cmd_t     g_admin_cmds[] =
 	},
 
 	{
-		"listbotsold",   G_admin_listbotsShort,  true,  "listbotsold",
+		"listbotsold",   G_admin_listbotsShort,  true,  "listbots",
 		N_("display a list of all server bots and some debug info about each (old version)"),
 		""
 	},
@@ -6244,15 +6244,24 @@ bool G_admin_listbotsShort( gentity_t *ent )
 	ADMP( va( "%s %d", QQ( N_( "^3listbots:^* $1$ bots in game:") ), level.numPlayingBots ) );
 	ADMP( QQ( N_( "Slot Name Team [s=skill b=behavior g=goal]" ) ) );
 	ADMBP_begin();
-	ForEntities<ClientComponent>( []( Entity& entity, ClientComponent& )
+	for ( int i = 0; i < level.maxclients; i++ )
 	{
-		gentity_t* ent = entity.oldEnt;
-		if ( !( ent->r.svFlags & SVF_BOT ) )
+		gentity_t* ent = g_entities + i;
+		if ( !( ent->r.svFlags & SVF_BOT ) || G_Team( ent ) != TEAM_ALIENS )
 		{
-			return;
+			continue;
 		}
 		ADMBP( va( "%zu %s", ent - g_entities, G_BotToStringShort( ent ).c_str() ) );
-	} );
+	}
+	for ( int i = 0; i < level.maxclients; i++ )
+	{
+		gentity_t* ent = g_entities + i;
+		if ( !( ent->r.svFlags & SVF_BOT ) || G_Team( ent ) != TEAM_HUMANS )
+		{
+			continue;
+		}
+		ADMBP( va( "%zu %s", ent - g_entities, G_BotToStringShort( ent ).c_str() ) );
+	}
 	ADMBP_end();
 	return true;
 }
