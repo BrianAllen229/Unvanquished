@@ -192,6 +192,14 @@ static bool overOffMeshConnectionStart( const Bot_t *bot, rVec pos )
 	return false;
 }
 
+bool G_IsBotOverNavcon( int botClientNum )
+{
+	rVec spos;
+	Bot_t *bot = &agents[ botClientNum ];
+	GetEntPosition( botClientNum, spos );
+	return overOffMeshConnectionStart( bot, spos );
+}
+
 static void G_UpdatePathCorridor( Bot_t *bot, rVec spos, botRouteTargetInternal target )
 {
 	bot->corridor.movePosition( spos, bot->nav->query, &bot->nav->filter );

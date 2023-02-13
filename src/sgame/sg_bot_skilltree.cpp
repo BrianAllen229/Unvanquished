@@ -168,6 +168,7 @@ static const std::vector<botSkillTreeElement_t> movement_skills = {
 	{ "mantis-attack-jump", BOT_A_LEAP_ON_ATTACK,        4, pred_alien, {} },
 	{ "goon-attack-jump",   BOT_A_POUNCE_ON_ATTACK,      5, pred_alien, {} },
 	{ "tyrant-attack-run",  BOT_A_TYRANT_CHARGE_ON_ATTACK, 5, pred_alien, {} },
+	{ "crazy-pounce",       BOT_A_CRAZY_POUNCE,          2, pred_alien, {} },
 };
 
 static const std::vector<botSkillTreeElement_t> survival_skills = {

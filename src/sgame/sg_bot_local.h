@@ -110,6 +110,7 @@ enum bot_skill
 	BOT_A_LEAP_ON_ATTACK, // mantis
 	BOT_A_POUNCE_ON_ATTACK, // dragoon and adv dragoon
 	BOT_A_TYRANT_CHARGE_ON_ATTACK,
+	BOT_A_CRAZY_POUNCE,
 
 	// situation awareness and survival
 	BOT_B_PAIN, // basic awareness: notice an enemy if it bites you, or shoots at you
@@ -194,6 +195,7 @@ void G_BotShutdownNav();
 void G_BotSetNavMesh( int botClientNum, qhandle_t navHandle );
 bool G_BotFindRoute( int botClientNum, const botRouteTarget_t *target, bool allowPartial );
 void G_BotUpdatePath( int botClientNum, const botRouteTarget_t *target, botNavCmd_t *cmd );
+bool G_IsBotOverNavcon( int botClientNum );
 bool G_BotNavTrace( int botClientNum, botTrace_t *botTrace, const glm::vec3& start, const glm::vec3& end );
 glm::vec3 ProjectPointOntoVector( const glm::vec3 &point, const glm::vec3 &linePoint1, const glm::vec3 &linePoint2 );
 

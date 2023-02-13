@@ -815,6 +815,61 @@ Global Bot Navigation
 =========================
 */
 
+static int lastNavconStart[ MAX_CLIENTS ] = { 0 };
+static Cvar::Cvar<int> g_bot_upwardNavconMinHeight("g_bot_upwardNavconMinHeight", "minial height difference for bots to use special upward movement.", Cvar::NONE, 0);
+static Cvar::Cvar<int> g_bot_upwardNavconAngleCorr("g_bot_upwardNavconAngleCorr", "not documented.", Cvar::NONE, 0);
+
+static int BotMoveToUpwardNavcon( gentity_t *self )
+{
+	weaponMode_t wpm = WPM_NONE;
+	int magnitude = 0;
+	const playerState_t& ps  = self->client->ps;
+	int selfClientNum = self->client->num();
+	bool overNavcon = G_IsBotOverNavcon( selfClientNum );
+	glm::vec3 target = self->botMind->nav().glm_tpos();
+	glm::vec3 ownPos = VEC2GLM( self->s.origin );
+
+	if ( overNavcon && target.z - ownPos.z > g_bot_upwardNavconMinHeight.Get() )
+	{
+		lastNavconStart[ selfClientNum ] = level.time;
+	}
+
+	int diff = level.time - lastNavconStart[ selfClientNum ];
+	if ( diff < 0 || diff > LEVEL3_POUNCE_TIME_UPG * 3 / 2 )
+	{
+		return true;
+	}
+	BotStandStill( self );
+
+	switch ( ps.stats [ STAT_CLASS ] )
+	{
+	case PCL_ALIEN_LEVEL3:
+		if ( self->botMind->botSkillSet[BOT_A_POUNCE_ON_FLEE] && ps.weaponCharge < LEVEL3_POUNCE_TIME )
+		{
+			wpm = WPM_SECONDARY;
+			magnitude = LEVEL3_POUNCE_JUMP_MAG;
+		}
+		break;
+	case PCL_ALIEN_LEVEL3_UPG:
+		if ( self->botMind->botSkillSet[BOT_A_POUNCE_ON_FLEE] && ps.weaponCharge < LEVEL3_POUNCE_TIME_UPG )
+		{
+			wpm = WPM_SECONDARY;
+			magnitude = LEVEL3_POUNCE_JUMP_MAG_UPG;
+		}
+		break;
+	default:
+		return true;
+	}
+	if ( wpm != WPM_NONE )
+	{
+		usercmd_t &botCmdBuffer = self->botMind->cmdBuffer;
+		botCmdBuffer.angles[PITCH] = ANGLE2SHORT( -CalcAimPitch( self, target, magnitude ) + g_bot_upwardNavconAngleCorr.Get() );
+		BotFireWeapon( wpm, &botCmdBuffer );
+		return true;
+	}
+	return true;
+}
+
 // This function makes the bot move and aim at it's goal, trying
 // to move faster if the skill is high enough, depending on it's
 // class.
@@ -862,7 +917,14 @@ bool BotMoveToGoal( gentity_t *self )
 	// when available (still need to implement wall walking, but that will be more complex)
 	if ( G_Team( self ) != targetTeam )
 	{
-		return true;
+		if ( self->botMind->botSkillSet[ BOT_A_CRAZY_POUNCE ] )
+		{
+			return BotMoveToUpwardNavcon( self );
+		}
+		else
+		{
+			return true;
+		}
 	}
 
 	weaponMode_t wpm = WPM_NONE;
