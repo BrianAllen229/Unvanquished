@@ -218,6 +218,26 @@ static void G_UpdatePathCorridor( Bot_t *bot, rVec spos, botRouteTargetInternal 
 	FindWaypoints( bot, bot->cornerVerts, bot->cornerFlags, bot->cornerPolys, &bot->numCorners, MAX_CORNERS );
 }
 
+bool G_BotPathNextCorner( int botClientNum, glm::vec3 &result )
+{
+	Bot_t *bot = &agents[ botClientNum ];
+	gentity_t *ent = &g_entities[ botClientNum ];
+	if ( bot->numCorners <= 0 )
+	{
+		return false;
+	}
+	// const float *corner = bot->corridor.getTarget();
+	// result = VEC2GLM( corner );
+	dtPolyRef firstPoly = bot->corridor.getFirstPoly();
+	float corner[ 3 ] = { 0 };
+	bot->nav->query->closestPointOnPolyBoundary( firstPoly, ent->s.origin, corner );
+	float temp = corner[ 1 ];
+	corner[ 1 ] = corner[ 2 ];
+	corner[ 2 ] = temp;
+	result = VEC2GLM( corner );
+	return true;
+}
+
 void G_BotUpdatePath( int botClientNum, const botRouteTarget_t *target, botNavCmd_t *cmd )
 {
 	rVec spos;

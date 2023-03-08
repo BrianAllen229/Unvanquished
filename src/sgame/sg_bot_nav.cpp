@@ -816,7 +816,7 @@ Global Bot Navigation
 */
 
 static int lastNavconStart[ MAX_CLIENTS ] = { 0 };
-static Cvar::Cvar<int> g_bot_upwardNavconMinHeight("g_bot_upwardNavconMinHeight", "minial height difference for bots to use special upward movement.", Cvar::NONE, 0);
+static Cvar::Cvar<int> g_bot_upwardNavconMinHeight("g_bot_upwardNavconMinHeight", "minial height difference for bots to use special upward movement.", Cvar::NONE, 80);
 static Cvar::Cvar<int> g_bot_upwardNavconAngleCorr("g_bot_upwardNavconAngleCorr", "not documented.", Cvar::NONE, 0);
 
 static int BotMoveToUpwardNavcon( gentity_t *self )
@@ -826,12 +826,24 @@ static int BotMoveToUpwardNavcon( gentity_t *self )
 	const playerState_t& ps  = self->client->ps;
 	int selfClientNum = self->client->num();
 	bool overNavcon = G_IsBotOverNavcon( selfClientNum );
-	glm::vec3 target = self->botMind->nav().glm_tpos();
 	glm::vec3 ownPos = VEC2GLM( self->s.origin );
+	glm::vec3 nextCorner;
+	bool hasNextCorner = G_BotPathNextCorner( selfClientNum, nextCorner );
 
-	if ( overNavcon && target.z - ownPos.z > g_bot_upwardNavconMinHeight.Get() )
+	if ( overNavcon )
 	{
 		lastNavconStart[ selfClientNum ] = level.time;
+	}
+
+	if ( !hasNextCorner )
+	{
+		return true;
+	}
+
+	// if not trying to move upward
+	if ( nextCorner.z - ownPos.z < g_bot_upwardNavconMinHeight.Get() )
+	{
+		return true;
 	}
 
 	int diff = level.time - lastNavconStart[ selfClientNum ];
@@ -844,14 +856,14 @@ static int BotMoveToUpwardNavcon( gentity_t *self )
 	switch ( ps.stats [ STAT_CLASS ] )
 	{
 	case PCL_ALIEN_LEVEL3:
-		if ( self->botMind->botSkillSet[BOT_A_POUNCE_ON_FLEE] && ps.weaponCharge < LEVEL3_POUNCE_TIME )
+		if ( ps.weaponCharge < LEVEL3_POUNCE_TIME )
 		{
 			wpm = WPM_SECONDARY;
 			magnitude = LEVEL3_POUNCE_JUMP_MAG;
 		}
 		break;
 	case PCL_ALIEN_LEVEL3_UPG:
-		if ( self->botMind->botSkillSet[BOT_A_POUNCE_ON_FLEE] && ps.weaponCharge < LEVEL3_POUNCE_TIME_UPG )
+		if ( ps.weaponCharge < LEVEL3_POUNCE_TIME_UPG )
 		{
 			wpm = WPM_SECONDARY;
 			magnitude = LEVEL3_POUNCE_JUMP_MAG_UPG;
@@ -863,7 +875,7 @@ static int BotMoveToUpwardNavcon( gentity_t *self )
 	if ( wpm != WPM_NONE )
 	{
 		usercmd_t &botCmdBuffer = self->botMind->cmdBuffer;
-		botCmdBuffer.angles[PITCH] = ANGLE2SHORT( -CalcAimPitch( self, target, magnitude ) + g_bot_upwardNavconAngleCorr.Get() );
+		botCmdBuffer.angles[PITCH] = ANGLE2SHORT( -CalcAimPitch( self, nextCorner, magnitude ) + g_bot_upwardNavconAngleCorr.Get() );
 		BotFireWeapon( wpm, &botCmdBuffer );
 		return true;
 	}
