@@ -915,6 +915,11 @@ static bool admin_higher_slap( gentity_t *admin, gentity_t *victim )
 	{
 		return true;
 	}
+	// anyone may slap bots (they deserve it)
+	else if ( victim->r.svFlags & SVF_BOT )
+	{
+		return true;
+	}
 
 	return admin_higher_admin_slap( admin->client->pers.admin, victim->client->pers.admin );
 }
