@@ -904,7 +904,7 @@ static bool admin_higher_admin_slap( g_admin_admin_t *a, g_admin_admin_t *b )
 	}
 	else
 	{
-		return b->level + 2 <= ( a ? a->level : 0 );
+		return b->level + 3 <= ( a ? a->level : 0 );
 	}
 }
 
