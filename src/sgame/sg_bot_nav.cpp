@@ -852,6 +852,7 @@ static int BotMoveToUpwardNavcon( gentity_t *self )
 		return true;
 	}
 	BotStandStill( self );
+	self->botMind->stuckTime = level.time;
 
 	switch ( ps.stats [ STAT_CLASS ] )
 	{
