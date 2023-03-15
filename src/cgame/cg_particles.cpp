@@ -557,7 +557,7 @@ particleSystem_t *CG_SpawnNewParticleSystem( qhandle_t psHandle )
 		}
 	}
 
-	Log::Notice( "MAX_PARTICLE_SYSTEMS hit" );
+	//Log::Notice( "MAX_PARTICLE_SYSTEMS hit" );
 	return nullptr;
 }
 
