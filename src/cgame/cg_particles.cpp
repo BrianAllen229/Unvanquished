@@ -369,7 +369,7 @@ static particle_t *CG_SpawnNewParticle( baseParticle_t *bp, particleEjector_t *p
 		}
 	}
 
-	Log::Notice( "MAX_PARTICLES hit" );
+	//Log::Notice( "MAX_PARTICLES hit" );
 	return nullptr;
 }
 
