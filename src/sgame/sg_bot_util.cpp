@@ -1755,6 +1755,27 @@ void BotFireWeapon( weaponMode_t mode, usercmd_t *botCmdBuffer )
 		usercmdPressButton( botCmdBuffer->buttons, BTN_ATTACK3 );
 	}
 }
+
+static Cvar::Cvar<int> g_bot_crazyPounceMinHeight("g_bot_crazyPounceMinHeight", "minial height difference for bots to attack upwards.", Cvar::NONE, 100);
+
+// return true if an upward attack is started or in progress, false otherwise
+static bool BotAttackUpward( gentity_t *self )
+{
+	glm::vec3 ownPos = VEC2GLM( self->s.origin );
+	const gentity_t *targetEnt = self->botMind->goal.getTargetedEntity();
+	if ( !targetEnt )
+	{
+		return false;
+	}
+	glm::vec3 targetPos = VEC2GLM( targetEnt->s.origin );
+	if ( targetPos.z - ownPos.z > g_bot_crazyPounceMinHeight.Get() )
+	{
+		BotMoveUpward( self, targetPos );
+		return true;
+	}
+	return false;
+}
+
 void BotClassMovement( gentity_t *self, bool inAttackRange )
 {
 	botMemory_t *mind = self->botMind;
@@ -1791,12 +1812,20 @@ void BotClassMovement( gentity_t *self, bool inAttackRange )
 			botIsJumper = self->botMind->botSkillSet[BOT_A_MARA_JUMP_ON_ATTACK];
 			break;
 		case PCL_ALIEN_LEVEL3:
+			if ( BotAttackUpward( self ) )
+			{
+				return;
+			}
 			break;
 		case PCL_ALIEN_LEVEL3_UPG:
 			if ( mind->goal.getTargetType() == entityType_t::ET_BUILDABLE && self->client->ps.ammo > 0 && inAttackRange )
 			{
 				// Don't move when sniping buildings as adv goon
 				BotStandStill( self );
+			}
+			else if ( BotAttackUpward( self ) )
+			{
+				return;
 			}
 			break;
 		case PCL_ALIEN_LEVEL4:

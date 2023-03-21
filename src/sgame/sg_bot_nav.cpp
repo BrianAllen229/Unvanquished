@@ -819,41 +819,11 @@ static int lastNavconStart[ MAX_CLIENTS ] = { 0 };
 static Cvar::Cvar<int> g_bot_upwardNavconMinHeight("g_bot_upwardNavconMinHeight", "minial height difference for bots to use special upward movement.", Cvar::NONE, 80);
 static Cvar::Cvar<int> g_bot_upwardNavconAngleCorr("g_bot_upwardNavconAngleCorr", "not documented.", Cvar::NONE, 0);
 
-static int BotMoveToUpwardNavcon( gentity_t *self )
+bool BotMoveUpward( gentity_t *self, glm::vec3 nextCorner )
 {
+	const playerState_t& ps  = self->client->ps;
 	weaponMode_t wpm = WPM_NONE;
 	int magnitude = 0;
-	const playerState_t& ps  = self->client->ps;
-	int selfClientNum = self->client->num();
-	bool overNavcon = G_IsBotOverNavcon( selfClientNum );
-	glm::vec3 ownPos = VEC2GLM( self->s.origin );
-	glm::vec3 nextCorner;
-	bool hasNextCorner = G_BotPathNextCorner( selfClientNum, nextCorner );
-
-	if ( overNavcon )
-	{
-		lastNavconStart[ selfClientNum ] = level.time;
-	}
-
-	if ( !hasNextCorner )
-	{
-		return true;
-	}
-
-	// if not trying to move upward
-	if ( nextCorner.z - ownPos.z < g_bot_upwardNavconMinHeight.Get() )
-	{
-		return true;
-	}
-
-	int diff = level.time - lastNavconStart[ selfClientNum ];
-	if ( diff < 0 || diff > LEVEL3_POUNCE_TIME_UPG * 3 / 2 )
-	{
-		return true;
-	}
-	BotStandStill( self );
-	self->botMind->stuckTime = level.time;
-
 	switch ( ps.stats [ STAT_CLASS ] )
 	{
 	case PCL_ALIEN_LEVEL3:
@@ -871,7 +841,7 @@ static int BotMoveToUpwardNavcon( gentity_t *self )
 		}
 		break;
 	default:
-		return true;
+		return false;
 	}
 	if ( wpm != WPM_NONE )
 	{
@@ -880,7 +850,41 @@ static int BotMoveToUpwardNavcon( gentity_t *self )
 		BotFireWeapon( wpm, &botCmdBuffer );
 		return true;
 	}
-	return true;
+	return false;
+}
+
+static bool BotTryMoveUpward( gentity_t *self )
+{
+	int selfClientNum = self->client->num();
+	bool overNavcon = G_IsBotOverNavcon( selfClientNum );
+	glm::vec3 ownPos = VEC2GLM( self->s.origin );
+	glm::vec3 nextCorner;
+	bool hasNextCorner = G_BotPathNextCorner( selfClientNum, nextCorner );
+
+	if ( overNavcon )
+	{
+		lastNavconStart[ selfClientNum ] = level.time;
+	}
+
+	if ( !hasNextCorner )
+	{
+		nextCorner = self->botMind->nav().glm_tpos();
+	}
+
+	// if not trying to move upward
+	if ( nextCorner.z - ownPos.z < g_bot_upwardNavconMinHeight.Get() )
+	{
+		return true;
+	}
+
+	int diff = level.time - lastNavconStart[ selfClientNum ];
+	if ( diff < 0 || diff > LEVEL3_POUNCE_TIME_UPG * 3 / 2 )
+	{
+		return true;
+	}
+
+	BotStandStill( self );
+	return BotMoveUpward( self, nextCorner );
 }
 
 // This function makes the bot move and aim at it's goal, trying
@@ -930,14 +934,8 @@ bool BotMoveToGoal( gentity_t *self )
 	// when available (still need to implement wall walking, but that will be more complex)
 	if ( G_Team( self ) != targetTeam )
 	{
-		if ( self->botMind->botSkillSet[ BOT_A_CRAZY_POUNCE ] )
-		{
-			return BotMoveToUpwardNavcon( self );
-		}
-		else
-		{
-			return true;
-		}
+		BotTryMoveUpward( self );
+		return true;
 	}
 
 	weaponMode_t wpm = WPM_NONE;
