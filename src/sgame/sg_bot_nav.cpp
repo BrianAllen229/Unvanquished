@@ -826,6 +826,13 @@ bool BotMoveUpward( gentity_t *self, glm::vec3 nextCorner )
 	int magnitude = 0;
 	switch ( ps.stats [ STAT_CLASS ] )
 	{
+	case PCL_ALIEN_LEVEL1:
+		if ( ps.weaponCharge <= 50 ) // I don't remember why 50
+		{
+			wpm = WPM_SECONDARY;
+			magnitude = LEVEL1_POUNCE_MINPITCH;
+		}
+		break;
 	case PCL_ALIEN_LEVEL3:
 		if ( ps.weaponCharge < LEVEL3_POUNCE_TIME )
 		{

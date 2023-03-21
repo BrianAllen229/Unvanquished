@@ -1804,6 +1804,10 @@ void BotClassMovement( gentity_t *self, bool inAttackRange )
 			botIsSmall = true;
 			break;
 		case PCL_ALIEN_LEVEL1:
+			if ( BotAttackUpward( self ) )
+			{
+				return;
+			}
 			botIsSmall = true;
 			break;
 		case PCL_ALIEN_LEVEL2:
