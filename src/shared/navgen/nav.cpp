@@ -35,6 +35,7 @@
 #include "navgen.h"
 
 static Log::Logger LOG( VM_STRING_PREFIX "navgen", "", Log::Level::NOTICE );
+static Cvar::Range<Cvar::Cvar<float>> sg_botAutojump("sg_botAutojump", "security ratio for lesser autojump, 0 disables, values above 0.5 are more dangerous", Cvar::NONE, 0, 0, 1);
 
 void UnvContext::doLog(const rcLogCategory /*category*/, const char* msg, const int /*len*/)
 {
@@ -916,7 +917,8 @@ static NavgenStatus rasterizeTileLayers( Geometry& geo, rcContext &context, int 
 
 void NavmeshGenerator::StartGeneration( class_t species )
 {
-	LOG.Notice( "Generating navmesh for %s", BG_Class( species )->name );
+	classAttributes_t const& agent = *BG_Class( species );
+	LOG.Notice( "Generating navmesh for %s", agent.name );
 	d_.reset( new PerClassData );
 	d_->species = species;
 	d_->status = initStatus_;
@@ -943,11 +945,21 @@ void NavmeshGenerator::StartGeneration( class_t species )
 	d_->tw = ( gw + ts - 1 ) / ts;
 	d_->th = ( gh + ts - 1 ) / ts;
 
+	int climb = config_.stepSize;
+	if ( sg_botAutojump.Get() > 0.f )
+	{
+		float jump = agent.jumpMagnitude;
+		//FIXME use g_gravity
+		jump = Square( jump ) / 1600;//( g_gravity.Get() * 2 );
+		climb += jump * sg_botAutojump.Get();
+	}
+
+	Log::Notice( "generating agent %s with stepsize of %d", agent.name, config_.stepSize );
 	d_->cfg.cs = cellSize;
 	d_->cfg.ch = cellHeight_;
 	d_->cfg.walkableSlopeAngle = RAD2DEG( acosf( MIN_WALK_NORMAL ) );
 	d_->cfg.walkableHeight = ( int ) ceilf( height / d_->cfg.ch );
-	d_->cfg.walkableClimb = ( int ) floorf( config_.stepSize / d_->cfg.ch );
+	d_->cfg.walkableClimb = ( int ) floorf( climb / d_->cfg.ch );
 	d_->cfg.walkableRadius = ( int ) ceilf( radius / d_->cfg.cs );
 	d_->cfg.maxEdgeLen = 0;
 	d_->cfg.maxSimplificationError = 1.3f;
@@ -971,7 +983,7 @@ void NavmeshGenerator::StartGeneration( class_t species )
 	d_->tcparams.height = ts;
 	d_->tcparams.walkableHeight = height;
 	d_->tcparams.walkableRadius = radius;
-	d_->tcparams.walkableClimb = config_.stepSize;
+	d_->tcparams.walkableClimb = climb;
 	d_->tcparams.maxSimplificationError = 1.3;
 	d_->tcparams.maxTiles = d_->tw * d_->th * EXPECTED_LAYERS_PER_TILE;
 	d_->tcparams.maxObstacles = 256;
