@@ -890,7 +890,16 @@ static bool BotTryMoveUpward( gentity_t *self )
 		return true;
 	}
 
-	BotStandStill( self );
+	switch ( self->client->ps.stats [ STAT_CLASS ] )
+	{
+	case PCL_ALIEN_LEVEL3:
+	case PCL_ALIEN_LEVEL3_UPG:
+		BotStandStill( self );
+		break;
+	default:
+		break;
+	}
+
 	return BotMoveUpward( self, nextCorner );
 }
 
