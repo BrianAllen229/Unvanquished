@@ -818,6 +818,7 @@ Global Bot Navigation
 static int lastNavconStart[ MAX_CLIENTS ] = { 0 };
 static Cvar::Cvar<int> g_bot_upwardNavconMinHeight("g_bot_upwardNavconMinHeight", "minial height difference for bots to use special upward movement.", Cvar::NONE, 80);
 static Cvar::Cvar<int> g_bot_upwardNavconAngleCorr("g_bot_upwardNavconAngleCorr", "not documented.", Cvar::NONE, 0);
+static Cvar::Cvar<float> g_bot_upwardMaraJumpChance("g_bot_upwardMaraJumpChance", "not documented.", Cvar::NONE, 100.0f);
 
 bool BotMoveUpward( gentity_t *self, glm::vec3 nextCorner )
 {
@@ -833,6 +834,16 @@ bool BotMoveUpward( gentity_t *self, glm::vec3 nextCorner )
 			magnitude = LEVEL1_POUNCE_MINPITCH;
 		}
 		break;
+	case PCL_ALIEN_LEVEL2:
+	case PCL_ALIEN_LEVEL2_UPG:
+		{
+			int msec = level.time - level.previousTime;
+			if ( (g_bot_upwardMaraJumpChance.Get() / 1000.0f) * msec > random() )
+			{
+				BotJump( self );
+			}
+			break;
+		}
 	case PCL_ALIEN_LEVEL3:
 		if ( ps.weaponCharge < LEVEL3_POUNCE_TIME )
 		{
