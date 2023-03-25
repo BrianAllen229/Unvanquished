@@ -1555,6 +1555,11 @@ static int BotGetAimTime( gentity_t *self )
 
 void BotAimAtEnemy( gentity_t *self )
 {
+	if ( !self->client || ( self->client->ps.stats[ STAT_CLASS ] != PCL_HUMAN_BSUIT && ( self->client->ps.stats[ STAT_STATE ] & SS_BLOBLOCKED ) ) )
+	{
+		return;
+	}
+
 	if ( self->botMind->futureAimTime < level.time )
 	{
 		int aimTime = self->botMind->futureAimTimeInterval = BotGetAimTime( self );
@@ -1991,6 +1996,11 @@ void BotFireWeaponAI( gentity_t *self )
 	glm::vec3 muzzle;
 	trace_t trace;
 	usercmd_t *botCmdBuffer = &self->botMind->cmdBuffer;
+
+	if ( !self->client || ( self->client->ps.stats[ STAT_CLASS ] != PCL_HUMAN_BSUIT && ( self->client->ps.stats[ STAT_STATE ] & SS_BLOBLOCKED ) ) )
+	{
+		return;
+	}
 
 	AngleVectors( VEC2GLM( self->client->ps.viewangles ), &forward, &right, &up );
 	muzzle = G_CalcMuzzlePoint( self, forward );
