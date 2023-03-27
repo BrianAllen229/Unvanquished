@@ -72,6 +72,8 @@ NavgenMapIdentification GetNavgenMapId( Str::StringRef mapName )
 	return mapId;
 }
 
+extern Cvar::Range<Cvar::Cvar<float>> sg_botAutojump;
+
 // Returns a non-empty string on error
 std::string GetNavmeshHeader( fileHandle_t f, NavMeshSetHeader& header, Str::StringRef mapName )
 {
@@ -88,7 +90,8 @@ std::string GetNavmeshHeader( fileHandle_t f, NavMeshSetHeader& header, Str::Str
 
 	// In principle we only need NAVMESHSET_VERSION, but people probably won't remember to change it
 	// so add some extra checks
-	if ( header.version != NAVMESHSET_VERSION ||
+	// HACK: xor in the value of sg_botAutojump
+	if ( header.version != ( NAVMESHSET_VERSION ^ ( static_cast<int> ( 1000.0f * sg_botAutojump.Get() ) ) ) ||
 	     header.productVersionHash != ProductVersionHash() ||
 	     header.headerSize != sizeof(header) )
 	{
