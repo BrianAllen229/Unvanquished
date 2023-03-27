@@ -35,7 +35,7 @@
 #include "navgen.h"
 
 static Log::Logger LOG( VM_STRING_PREFIX "navgen", "", Log::Level::NOTICE );
-static Cvar::Range<Cvar::Cvar<float>> sg_botAutojump("sg_botAutojump", "security ratio for lesser autojump, 0 disables, values above 0.5 are more dangerous", Cvar::NONE, 0, 0, 1);
+Cvar::Range<Cvar::Cvar<float>> sg_botAutojump("sg_botAutojump", "security ratio for lesser autojump, 0 disables, values above 0.5 are more dangerous", Cvar::NONE, 0, 0, 1);
 
 void UnvContext::doLog(const rcLogCategory /*category*/, const char* msg, const int /*len*/)
 {
@@ -103,7 +103,8 @@ void NavmeshGenerator::WriteFile() {
 	}
 
 	header.magic = NAVMESHSET_MAGIC;
-	header.version = NAVMESHSET_VERSION;
+	// HACK: xor in the value of sg_botAutojump
+	header.version = NAVMESHSET_VERSION ^ ( static_cast<int> ( 1000.0f * sg_botAutojump.Get() ) );
 	header.productVersionHash = ProductVersionHash();
 	header.headerSize = sizeof(header);
 	header.mapId = GetNavgenMapId( mapName_ );
