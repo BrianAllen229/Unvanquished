@@ -945,13 +945,19 @@ void NavmeshGenerator::StartGeneration( class_t species )
 	d_->tw = ( gw + ts - 1 ) / ts;
 	d_->th = ( gh + ts - 1 ) / ts;
 
-	int climb = config_.stepSize;
+	float climb = config_.stepSize;
 	if ( sg_botAutojump.Get() > 0.f )
 	{
-		float jump = agent.jumpMagnitude;
+		glm::vec3 mins, maxs;
+		BG_BoundingBox( species, &mins, &maxs, nullptr, nullptr, nullptr );
+		float safety = ( maxs.z - mins.z ) * sg_botAutojump.Get();
 		//FIXME use g_gravity
-		jump = Square( jump ) / 1600;//( g_gravity.Get() * 2 );
-		climb += jump * sg_botAutojump.Get();
+		float jump = Square( agent.jumpMagnitude ) / 1600; //( g_gravity.Get() * 2 );
+
+		climb = std::min( safety, climb + jump );
+
+		// keep the STEPSIZE as minimum, just in case
+		climb = std::max( config_.stepSize, climb );
 	}
 
 	Log::Notice( "generating agent %s with stepsize of %d", agent.name, climb );
