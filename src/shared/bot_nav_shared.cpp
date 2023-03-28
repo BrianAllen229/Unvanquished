@@ -95,6 +95,7 @@ std::string GetNavmeshHeader( fileHandle_t f, NavMeshSetHeader& header, Str::Str
 	     header.productVersionHash != ProductVersionHash() ||
 	     header.headerSize != sizeof(header) )
 	{
+		fprintf( stderr, "navmesh version mismatch: found %d, need %d\n", header.version, NAVMESHSET_VERSION ^ ( static_cast<int> ( 1000.0f * sg_botAutojump.Get() ) ) );
 		return "File is wrong version";
 	}
 
