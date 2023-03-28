@@ -954,7 +954,7 @@ void NavmeshGenerator::StartGeneration( class_t species )
 		climb += jump * sg_botAutojump.Get();
 	}
 
-	Log::Notice( "generating agent %s with stepsize of %d", agent.name, config_.stepSize );
+	Log::Notice( "generating agent %s with stepsize of %d", agent.name, climb );
 	d_->cfg.cs = cellSize;
 	d_->cfg.ch = cellHeight_;
 	d_->cfg.walkableSlopeAngle = RAD2DEG( acosf( MIN_WALK_NORMAL ) );
