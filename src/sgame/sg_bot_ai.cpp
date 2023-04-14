@@ -889,8 +889,8 @@ AINodeStatus_t BotActionFightCampy( gentity_t *self, AIGenericNode_t *node )
 	// We are human and we either are at fire range, or have
 	// a direct path to goal
 
-	if ( self->botMind->botSkill.level >= 3 && DistanceToGoalSquared( self ) < Square( MAX_HUMAN_DANCE_DIST )
-	        && ( DistanceToGoalSquared( self ) > Square( MIN_HUMAN_DANCE_DIST ) || self->botMind->botSkill.level < 5 )
+	if ( self->botMind->skillLevel >= 3 && DistanceToGoalSquared( self ) < Square( MAX_HUMAN_DANCE_DIST )
+	        && ( DistanceToGoalSquared( self ) > Square( MIN_HUMAN_DANCE_DIST ) || self->botMind->skillLevel < 5 )
 	        && self->client->ps.weapon != WP_PAIN_SAW && self->client->ps.weapon != WP_FLAMER )
 	{
 		BotMoveInDir( self, MOVE_BACKWARD );
