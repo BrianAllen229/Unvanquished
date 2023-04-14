@@ -786,6 +786,6 @@ std::string G_BotToStringShort( gentity_t *bot )
 		return "";
 	}
 	return Str::Format( "^*%s^*: %s [s=%d b=%s g=%s]",
-			bot->client->pers.netname, BG_TeamName( G_Team( bot ) ), bot->botMind->botSkill.level,
+			bot->client->pers.netname, BG_TeamName( G_Team( bot ) ), bot->botMind->skillLevel,
 			bot->botMind->behaviorTree->name, BotGoalToString( bot ) );
 }
