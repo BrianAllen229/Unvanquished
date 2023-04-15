@@ -12,6 +12,28 @@
 		<img class="circles" src="/ui/assets/background/circles2" />
 		<img class="black2" src="/ui/assets/background/black2" />
 
+		<div style="position: absolute; margin: auto; top: 0; bottom: 0; left: 0; right: 0; padding: 1em; width: 33em; height: 17em; background-color: rgba( 10%,10%,10%, 95%); color: #999999; border: .17em rgba( 0%, 0%, 0%, 35%);">
+			<h1>Bot Tactic</h1>
+			<h2>All Bots</h2>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic stay-here 64\"; hide", event)'><button>Stay Here</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic follow 64\"; hide", event)'><button>Follow</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic attack 64\"; hide", event)'><button>Attack</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic defend 64\"; hide", event)'><button>Defend</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic default 64\"; hide", event)'><button>Default</button></input>
+			<h2>Squad A</h2>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic stay-here a\"; hide", event)'><button>Stay Here</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic follow a\"; hide", event)'><button>Follow</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic attack a\"; hide", event)'><button>Attack</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic defend a\"; hide", event)'><button>Defend</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic default a\"; hide", event)'><button>Default</button></input>
+			<h2>Squad B</h2>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic stay-here b\"; hide", event)'><button>Stay Here</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic follow b\"; hide", event)'><button>Follow</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic attack b\"; hide", event)'><button>Attack</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic defend b\"; hide", event)'><button>Defend</button></input>
+			<input type="button" onclick='Events.pushevent("execForm \"tactic default b\"; hide", event)'><button>Default</button></input>
+		</div>
+
 		<div style="position: absolute; bottom: 1em; left: 1em; color: rgba(255, 0, 0, 200);"><translate>This is a beta version of Unvanquished. Please report any issue you may find at https://bugs.unvanquished.net</translate></div>
 
 		<sidebar>
@@ -48,10 +70,14 @@
 							</blocklink>
 							<blocklink onclick='Events.pushevent("exec callvote kickbots", event)'><translate>Kick bots</translate></blocklink>
 							<blocklink onclick='Events.pushevent("show callvote_fillbots", event)'><translate>Fill with bots</translate></blocklink>
+							<blocklink onclick='Events.pushevent("show callvote_botskill", event)'><translate>Set bot skill</translate></blocklink>
 							<blocklink onclick='Events.pushevent("show callvote_map", event)'><translate>Change map</translate></blocklink>
 							<blocklink onclick='Events.pushevent("exec callvote extend", event)'><translate>Extend timelimit</translate></blocklink>
 							<blocklink onclick='Events.pushevent("show callvote_draw", event)'><translate>Call a draw</translate></blocklink>
 							<blocklink onclick='Events.pushevent("exec callteamvote admitdefeat", event)'><translate>Admit defeat</translate></blocklink>
+							<blocklink onclick='Events.pushevent("show callvote_maxminers", event)'><translate>Set max drills/leeches</translate></blocklink>
+							<blocklink onclick='Events.pushevent("show callvote_minerbp", event)'><translate>BP per drill/leech</translate></blocklink>
+							<blocklink onclick='Events.pushevent("show callvote_ff", event)'><translate>Friendly fire</translate></blocklink>
 						</indent>
 					</sidesection>
 
@@ -110,6 +136,12 @@
 						<indent>
 							<blocklink onclick='Events.pushevent("show help_gameplay", event)'><translate>Gameplay guide</translate></blocklink>
 							<blocklink onclick='Events.pushevent("show help_textentry", event)'><translate>Colour codes and symbols</translate></blocklink>
+						</indent>
+
+						<h2><translate>Map&amp;Tactic Testing</translate></h2>
+						<indent>
+							<blocklink onclick='Events.pushevent("show tactic_commands", event)'><translate>Bot Tactic Commands</translate></blocklink>
+							<blocklink onclick='Events.pushevent("show changelog", event)'><translate>Change Log</translate></blocklink>
 						</indent>
 
 						<br />

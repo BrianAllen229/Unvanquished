@@ -35,6 +35,8 @@
 	misc
 	{
 		// ######## Custom section.  Add and remove freely ########
+		ui/changelog.rml
+		ui/tactic_commands.rml
 		ui/options_player.rml
 		ui/options_fov.rml
 		ui/options_graphics.rml
@@ -57,6 +59,10 @@
 		ui/callvote_map.rml
 		ui/callvote_fillbots.rml
 
+		ui/callvote_botskill.rml
+		ui/callvote_maxminers.rml
+		ui/callvote_minerbp.rml
+		ui/callvote_ff.rml
 	}
 	cursor ui/assets/cursor
 }
