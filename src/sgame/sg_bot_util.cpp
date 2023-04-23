@@ -1544,7 +1544,7 @@ glm::vec3 BotGetIdealAimLocation( gentity_t *self, const botTarget_t &target, in
 
 static int BotGetAimTime( gentity_t *self )
 {
-	int baseTime = G_Team( self ) == TEAM_ALIENS ? 250 : 150;
+	int baseTime = G_Team( self ) == TEAM_ALIENS ? 150 : 150;
 	if ( self->botMind->skillSet[BOT_B_FAST_AIM] )
 	{
 		baseTime = baseTime * 3 / 5;
