@@ -2797,5 +2797,16 @@ int G_GetBuildDuration( gentity_t* ent )
 	float rawMult = std::pow(2.0f, (float)adjustedTime / (float)doubleTime);
 	float multiplier = maxMult < 1.0f ? rawMult : std::min(rawMult, maxMult);
 
+	switch ( ent->s.modelindex )
+	{
+	case BA_H_REACTOR:
+	case BA_H_ARMOURY:
+	case BA_H_MEDISTAT:
+	case BA_A_OVERMIND:
+	case BA_A_BOOSTER:
+		return baseDuration;
+	default:
+		break;
+	}
 	return (int)roundf((float)baseDuration * multiplier);
 }
