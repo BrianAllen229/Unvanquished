@@ -1621,8 +1621,8 @@ static const struct {
 	{ "botskill",        true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_fillBotsVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ "maxminers"      , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_maxMinersVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ "minerbp"        , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_mapVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
-	{ "enableff"       , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_mapVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
-	{ "disableff"      , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_mapVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
+	{ "enableff"       , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_ffVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
+	{ "disableff"      , true,  V_PUBLIC, T_OTHER,   false,  true,     qtrinary::qno,    &g_ffVotesPercent, VOTE_ALWAYS, nullptr, nullptr },
 	{ }
 	// note: map votes use the reason, if given, as the layout name
 };
