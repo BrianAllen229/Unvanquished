@@ -484,7 +484,8 @@ static const g_admin_flag_t g_admin_flags[] = {
 	{ ADMF_ALLFLAGS,        "can use any command" },
 	{ ADMF_CAN_PERM_BAN,    "can permanently ban players" },
 	{ ADMF_FORCETEAMCHANGE, "team balance rules do not apply" },
-	{ ADMF_INCOGNITO,       "does not show as admin in !listplayers" },
+	{ ADMF_INCOGNITO,       "does not show as admin in /listplayers" },
+	{ ADMF_SEES_INCOGNITO,  "can see all incognito admins in /listplayers" },
 	{ ADMF_IMMUNITY,        "cannot be vote kicked, vote muted, or banned" },
 	{ ADMF_IMMUTABLE,       "admin commands cannot be used on them" },
 	{ ADMF_NOCENSORFLOOD,   "no flood protection" },
@@ -3928,12 +3929,10 @@ bool G_admin_listplayers( gentity_t *ent )
 		{
 			authed = p->pers.pubkey_authenticated;
 
-			if ( hint )
-			{
-				hint = admin_higher( ent, &g_entities[ i ] );
-			}
+			hint = admin_higher( ent, &g_entities[ i ] );
 
-			if ( authed && ( hint || !G_admin_permission( &g_entities[ i ], ADMF_INCOGNITO ) ) )
+			if ( authed && ( hint || !G_admin_permission( &g_entities[ i ], ADMF_INCOGNITO )
+			                      || G_admin_permission( ent, ADMF_SEES_INCOGNITO ) ) )
 			{
 				l = G_admin_level( p->pers.admin->level );
 				G_SanitiseString( p->pers.netname, namecleaned,
@@ -3965,7 +3964,7 @@ bool G_admin_listplayers( gentity_t *ent )
 		           Color::ToString( color ).c_str(),
 		           t,
 		           l ? l->level : 0,
-		           hint ? '*' : ' ',
+		           canset && hint ? '*' : ' ',
 		           namelen + ( admin_level_maxname - colorlen ),
 		           lname,
 		           bot,
@@ -3976,7 +3975,7 @@ bool G_admin_listplayers( gentity_t *ent )
 		           ( registeredname ) ? "(a.k.a. " : "",
 		           ( registeredname ) ? registeredname : "",
 		           ( registeredname ) ? "^*)" : "",
-		           ( !authed ) ? "^1NOT AUTHED" : "" ) );
+		           ( !authed && canset && hint ) ? "^1NOT AUTHED" : "" ) );
 	}
 
 	ADMBP( va( "\n^3listplayers:^* legend:" ) );
