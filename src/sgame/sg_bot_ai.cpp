@@ -821,6 +821,8 @@ static bool TargetInOffmeshAttackRange( gentity_t *self )
 	}
 }
 
+bool BotWalkIfStaminaLow( gentity_t *self );
+
 // TODO: Move decision making out of these actions and into the rest of the behavior tree
 AINodeStatus_t BotActionFight( gentity_t *self, AIGenericNode_t *node )
 {
@@ -1006,7 +1008,10 @@ AINodeStatus_t BotActionFight( gentity_t *self, AIGenericNode_t *node )
 		BotStandStill( self );
 	}
 
-	BotSprint( self, true );
+	if ( !BotWalkIfStaminaLow( self ) )
+	{
+		BotSprint( self, true );
+	}
 
 	return STATUS_RUNNING;
 }
