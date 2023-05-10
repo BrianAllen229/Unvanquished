@@ -966,6 +966,16 @@ static bool BotTryMoveUpward( gentity_t *self )
 	return true;
 }
 
+bool BotWalkIfStaminaLow( gentity_t *self )
+{
+	if ( self->client->ps.stats[ STAT_STAMINA ] < BG_Class( self->client->ps.stats[ STAT_CLASS ] )->staminaJumpCost )
+	{
+		BotWalk( self, true );
+		return true;
+	}
+	return false;
+}
+
 // This function makes the bot move and aim at it's goal, trying
 // to move faster if the skill is high enough, depending on it's
 // class.
@@ -1016,7 +1026,7 @@ bool BotMoveToGoal( gentity_t *self )
 
 	// if target is friendly, let's go there quickly (heal, poison) by using trick moves
 	// when available (still need to implement wall walking, but that will be more complex)
-	if ( G_Team( self ) != targetTeam )
+	if ( G_Team( self ) == TEAM_ALIENS && G_Team( self ) != targetTeam )
 	{
 		BotTryMoveUpward( self );
 		return true;
@@ -1041,6 +1051,7 @@ bool BotMoveToGoal( gentity_t *self )
 		case PCL_HUMAN_MEDIUM:
 		case PCL_HUMAN_BSUIT:
 			BotSprint( self, true );
+			BotWalkIfStaminaLow( self );
 			break;
 		//those classes do not really have capabilities allowing them to be
 		//significantly faster while fleeing (except jumps, but that also
