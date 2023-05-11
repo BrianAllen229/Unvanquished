@@ -3233,6 +3233,7 @@ void Cmd_TeamStatus_f( gentity_t * ent )
 				level.team[ TEAM_ALIENS ].numSpawns, builders, // spawns, builders
 				structures[ BA_A_BOOSTER ].count, structures[ BA_A_LEECH ].count, maxMinersStr ) ); // booster, leech
 	}
+	else
 	{
 		G_Say( ent, SAY_TEAM,
 		      va( "^3[reactor]: %s(%d) ^3Spawns: ^5%d ^3Builders: ^5%d ^3Armouries: ^5%d ^3Medistations: ^5%d ^3Drills: ^5%d/%s",
