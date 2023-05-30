@@ -870,6 +870,11 @@ void BotMoveUpward( gentity_t *self, glm::vec3 nextCorner )
 	case PCL_ALIEN_LEVEL1:
 		if ( level.time < WallclimbStopTime( self ) )
 		{
+			if ( level.time - self->botMind->stuckTime > 700 && level.time - self->botMind->lastNavconTime > 700 )
+			{
+				usercmd_t *botCmdBuffer = &self->botMind->cmdBuffer;
+				BotFireWeapon( WPM_PRIMARY, botCmdBuffer );
+			}
 			BotClimbToGoal( self );
 			return;
 		}
