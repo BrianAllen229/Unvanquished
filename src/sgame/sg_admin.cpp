@@ -3959,12 +3959,12 @@ bool G_admin_demigod( gentity_t *ent )
 
 	if ( !g_clients[ pid ].isDemigod )
 	{
-		AP( va( "print_tr " QQ( N_( "^3demigod:^* $1$^* decided that $2$^1 IS A DEMIGOD^*" ) ) " %s %s ",
+		AP( va( "print_tr " QQ( N_( "^3demigod:^* $1$^* decided that $2$^6 IS A DEMIGOD^*" ) ) " %s %s ",
 				G_quoted_admin_name( ent ), Quote( vic->client->pers.netname ) ) );
 	}
 	else
 	{
-		AP( va( "print_tr " QQ( N_( "^3demigod:^* $1$^* decided that $2$^* is not a demigod anymore" ) ) " %s %s ",
+		AP( va( "print_tr " QQ( N_( "^3demigod:^* $1$^* decided that $2$^* is no longer a demigod" ) ) " %s %s ",
 				G_quoted_admin_name( ent ), Quote( vic->client->pers.netname ) ) );
 	}
 
