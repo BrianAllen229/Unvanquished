@@ -927,7 +927,10 @@ AINodeStatus_t BotActionFightHelper( gentity_t *self, AIGenericNode_t *node, int
 
 	if ( inAttackRange && self->botMind->goal.getTargetType() == entityType_t::ET_BUILDABLE )
 	{
-		BotStandStill( self );
+		//BotStandStill( self );
+		BotStrafeDodge( self );
+		BotWalk( self, true );
+		return STATUS_RUNNING;
 	}
 
 	if ( !BotWalkIfStaminaLow( self ) )
