@@ -824,7 +824,7 @@ static bool TargetInOffmeshAttackRange( gentity_t *self )
 bool BotWalkIfStaminaLow( gentity_t *self );
 
 // TODO: Move decision making out of these actions and into the rest of the behavior tree
-AINodeStatus_t BotActionFight( gentity_t *self, AIGenericNode_t *node )
+AINodeStatus_t BotActionFightHelper( gentity_t *self, AIGenericNode_t *node, int senseRange, int chaseTime )
 {
 	team_t myTeam = ( team_t ) self->client->pers.team;
 	botMemory_t const* mind = self->botMind;
@@ -869,7 +869,7 @@ AINodeStatus_t BotActionFight( gentity_t *self, AIGenericNode_t *node )
 	}
 
 	//aliens have radar so they will always 'see' the enemy if they are in radar range
-	if ( myTeam == TEAM_ALIENS && DistanceToGoalSquared( self ) <= Square( g_bot_aliensenseRange.Get() ) )
+	if ( myTeam == TEAM_ALIENS && DistanceToGoalSquared( self ) <= Square( senseRange ) )
 	{
 		self->botMind->enemyLastSeen = level.time;
 	}
@@ -889,7 +889,7 @@ AINodeStatus_t BotActionFight( gentity_t *self, AIGenericNode_t *node )
 			// retarget
 			return STATUS_SUCCESS;
 		}
-		else if ( level.time - self->botMind->enemyLastSeen >= g_bot_chasetime.Get() )
+		else if ( level.time - self->botMind->enemyLastSeen >= chaseTime )
 		{
 			return STATUS_SUCCESS;
 		}
@@ -1014,6 +1014,19 @@ AINodeStatus_t BotActionFight( gentity_t *self, AIGenericNode_t *node )
 	}
 
 	return STATUS_RUNNING;
+}
+
+static Cvar::Cvar<int> g_bot_chasetimeCampy("g_bot_chasetimeCampy", "bots stop chasing after x ms out of sight, when campy", Cvar::NONE, 1000);
+static Cvar::Cvar<int> g_bot_aliensenseRangeCampy("g_bot_aliensenseRangeCampy", "distance of alien sensor for campy bots", Cvar::NONE, ALIENSENSE_RANGE / 3);
+
+AINodeStatus_t BotActionFightCampy( gentity_t *self, AIGenericNode_t *node )
+{
+	return BotActionFightHelper(self, node, g_bot_aliensenseRangeCampy.Get(), g_bot_chasetimeCampy.Get() );
+}
+
+AINodeStatus_t BotActionFight( gentity_t *self, AIGenericNode_t *node )
+{
+	return BotActionFightHelper(self, node, g_bot_aliensenseRange.Get(), g_bot_chasetime.Get() );
 }
 
 AINodeStatus_t BotActionFlee( gentity_t *self, AIGenericNode_t *node )
