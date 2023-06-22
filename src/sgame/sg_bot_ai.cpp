@@ -853,7 +853,7 @@ AINodeStatus_t BotActionFightHelper( gentity_t *self, AIGenericNode_t *node, int
 		return STATUS_FAILURE;
 	}
 
-	if ( mind->hasOffmeshGoal && !BotTargetIsVisible( self, self->botMind->goal, MASK_OPAQUE ) )
+	if ( mind->hasOffmeshGoal && !BotTargetIsVisible( self, self->botMind->goal, MASK_SHOT ) )
 	{
 		return STATUS_FAILURE;
 	}
