@@ -3152,12 +3152,39 @@ static std::map<std::string, Cvar::Cvar<bool> *> botEquipCvarsAliens{
 	{"level3upg", &g_bot_level3upg},
 	{"level4", &g_bot_level4},
 };
+std::vector<std::string> botEquipHumanKeys = { "psaw", "shotgun", "lgun", "mdriver", "chaingun", "prifle", "flamer", "lcannon", "bsuit", "firebomb", "grenade", "radar" };
+std::vector<std::string> botEquipAlienKeys = { "level1", "level2", "level2upg", "level3", "level3upg", "level4" };
+
+static void botEquipStatus( gentity_t * ent, std::map<std::string, Cvar::Cvar<bool> *> &cvarsMap, std::vector<std::string> &keys )
+{
+	std::string msg = "^AStatus: ";
+	for ( size_t i = 0; i < keys.size(); i++ )
+	{
+		msg += "^5" + keys[ i ] + " " + ( cvarsMap.at( keys[ i ] )->Get() ? "on" : "^1OFF^5" );
+		if ( i < keys.size() - 1 )
+		{
+			msg += ", ";
+		}
+	}
+	ADMP( Quote( msg.c_str() ) );
+}
 
 static void Cmd_Bot_Equip_f( gentity_t * ent )
 {
 	if ( trap_Argc() != 2 )
 	{
-		ADMP( QQ( N_( "^3botequip:^* usage: botequip <item-or-class>" ) ) ) ;
+		switch ( G_Team( ent ) )
+		{
+		case TEAM_HUMANS:
+			botEquipStatus( ent, botEquipCvarsHumans, botEquipHumanKeys );
+			break;
+		case TEAM_ALIENS:
+			botEquipStatus( ent, botEquipCvarsAliens, botEquipAlienKeys );
+			break;
+		default:
+			ASSERT( false );
+			return;
+		}
 		return;
 	}
 
