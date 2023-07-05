@@ -52,8 +52,11 @@
 			<input type="button" onclick='Events.pushevent("execForm \"tactic default b\"; hide", event)'><button>Default</button></input>
 		</div>
 
-		<div style="position: absolute; margin: auto; top: -20em; bottom: 0; left: 0; right: 0; padding: 1em; width: 33em; height: 14.5em; background-color: rgba( 10%,10%,10%, 95%); color: #999999; border: .17em rgba( 0%, 0%, 0%, 35%);" id="bot_equip_menu_human">
+		<div style="position: absolute; margin: auto; top: -21em; bottom: 0; left: 0; right: 0; padding: 1em; width: 33em; height: 17.75em; background-color: rgba( 10%,10%,10%, 95%); color: #999999; border: .17em rgba( 0%, 0%, 0%, 35%);" id="bot_equip_menu_human">
 			<h1>Toggle Bot Equipment</h1>
+			<row>
+				<input type="button" onclick='Events.pushevent("execForm \"botequip\"; hide", event)'><button>STATUS</button></input>
+			</row>
 			<row>
 				<input type="button" onclick='Events.pushevent("execForm \"botequip chaingun\"; hide", event)'><button>Chaingun</button></input>
 				<input type="button" onclick='Events.pushevent("execForm \"botequip mdriver\"; hide", event)'><button>Mass Driver</button></input>
@@ -74,8 +77,11 @@
 			</row>
 		</div>
 
-		<div style="position: absolute; margin: auto; top: -17.75em; bottom: 0; left: 0; right: 0; padding: 1em; width: 33em; height: 10em; background-color: rgba( 10%,10%,10%, 95%); color: #999999; border: .17em rgba( 0%, 0%, 0%, 35%);" id="bot_equip_menu_alien">
+		<div style="position: absolute; margin: auto; top: -18.625em; bottom: 0; left: 0; right: 0; padding: 1em; width: 33em; height: 13.25em; background-color: rgba( 10%,10%,10%, 95%); color: #999999; border: .17em rgba( 0%, 0%, 0%, 35%);" id="bot_equip_menu_alien">
 			<h1>Toggle Bot Classes</h1>
+			<row>
+				<input type="button" onclick='Events.pushevent("execForm \"botequip\"; hide", event)'><button>STATUS</button></input>
+			</row>
 			<row>
 				<input type="button" onclick='Events.pushevent("execForm \"botequip level3upg\"; hide", event)'><button>Advanced Dragoon</button></input>
 				<input type="button" onclick='Events.pushevent("execForm \"botequip level3\"; hide", event)'><button>Dragoon</button></input>
