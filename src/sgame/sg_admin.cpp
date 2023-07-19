@@ -3950,7 +3950,7 @@ bool G_admin_demigod( gentity_t *ent )
 
 	vic = &g_entities[ pid ];
 
-	if ( !admin_higher_slap( ent, vic ) )
+	if ( !admin_higher( ent, vic ) )
 	{
 		ADMP( va( "%s %s", QQ( N_( "^3$1$:^* sorry, but your intended victim has a higher admin"
 		          " level than you" ) ), "demigod" ) );
@@ -3959,13 +3959,11 @@ bool G_admin_demigod( gentity_t *ent )
 
 	if ( !g_clients[ pid ].isDemigod )
 	{
-		AP( va( "print_tr " QQ( N_( "^3demigod:^* $1$^* decided that $2$^6 IS A DEMIGOD^*" ) ) " %s %s ",
-				G_quoted_admin_name( ent ), Quote( vic->client->pers.netname ) ) );
+		G_admin_action( QQ( N_("^3demigod:^* $1$^* decided that $2$^6 IS A DEMIGOD^*") ), "%s %s", ent, Quote( vic->client->pers.netname ) );
 	}
 	else
 	{
-		AP( va( "print_tr " QQ( N_( "^3demigod:^* $1$^* decided that $2$^* is no longer a demigod" ) ) " %s %s ",
-				G_quoted_admin_name( ent ), Quote( vic->client->pers.netname ) ) );
+		G_admin_action( QQ( N_("^3demigod:^* $1$^* decided that $2$^* is no longer a demigod^*") ), "%s %s", ent, Quote( vic->client->pers.netname ) );
 	}
 
 	g_entities[ pid ].client->isDemigod = !g_entities[ pid ].client->isDemigod;
