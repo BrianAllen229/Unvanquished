@@ -2151,10 +2151,15 @@ void BotFireWeaponAI( gentity_t *self )
 				}
 				else
 				{
+					if ( botTarget->client && level.time - botTarget->client->lastCombatTime < 5000 )
+					{
+						targetMaxHP *= Entities::HealthFraction( botTarget );
+					}
 					float dmgRatio = targetMaxHP / LCANNON_DAMAGE;
 					float chargeMax = static_cast<float>( LCANNON_CHARGE_TIME_MAX );
 					float charge = chargeMax * std::min( dmgRatio, 0.95f );
-					if ( self->client->ps.weaponCharge < charge )
+					bool isFarAway = DistanceToGoalSquared( self ) > Square( 100 );
+					if ( self->client->ps.weaponCharge < charge && ( isFarAway || self->client->ps.weaponCharge < 0.3f ) )
 					{
 						BotFireWeapon( WPM_PRIMARY, botCmdBuffer );
 					}
